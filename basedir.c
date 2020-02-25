@@ -1,5 +1,5 @@
 /* Copyright (c) 2007 Mark Nevill
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -8,10 +8,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -29,18 +29,10 @@
 #include <config.h>
 #endif
 
-#if STDC_HEADERS || HAVE_STDLIB_H || !defined(HAVE_CONFIG_H)
-#  include <stdlib.h>
-#endif
-#if HAVE_MEMORY_H || !defined(HAVE_CONFIG_H)
-#  include <memory.h>
-#endif
-#if HAVE_STRING_H || !defined(HAVE_CONFIG_H)
-#  include <string.h>
-#endif
-#if HAVE_STRINGS_H
-#  include <strings.h>
-#endif
+#include <stdlib.h>
+#include <memory.h>
+#include <string.h>
+#include <strings.h>
 
 #include <errno.h>
 #include <sys/stat.h>
@@ -65,28 +57,16 @@ static void xdgZeroMemory(void* p, int n)
 }
 #endif
 
-#if defined _WIN32 && !defined __CYGWIN__
-   /* Use Windows separators on all _WIN32 defining
-      environments, except Cygwin. */
-#  define DIR_SEPARATOR_CHAR		'\\'
-#  define DIR_SEPARATOR_STR		"\\"
-#  define PATH_SEPARATOR_CHAR		';'
-#  define PATH_SEPARATOR_STR		";"
-#  define NO_ESCAPES_IN_PATHS
-#else
-#  define DIR_SEPARATOR_CHAR		'/'
-#  define DIR_SEPARATOR_STR		"/"
-#  define PATH_SEPARATOR_CHAR		':'
-#  define PATH_SEPARATOR_STR		":"
-#  define NO_ESCAPES_IN_PATHS
-#endif
+#define DIR_SEPARATOR_CHAR		'/'
+#define DIR_SEPARATOR_STR		"/"
+#define PATH_SEPARATOR_CHAR		':'
+#define PATH_SEPARATOR_STR		":"
+#define NO_ESCAPES_IN_PATHS
 
 #include <basedir.h>
 #include <basedir_fs.h>
 
-#ifndef MAX
 #define MAX(a, b) ((b) > (a) ? (b) : (a))
-#endif
 
 static const char
 	DefaultRelativeDataHome[] = DIR_SEPARATOR_STR ".local" DIR_SEPARATOR_STR "share",
@@ -111,7 +91,7 @@ typedef struct _xdgCachedData
 	/* The first item is assumed to be allocated by malloc only if */
 	/* it is not equal to the appropriate home directory string above. */
 	char ** searchableDataDirectories;
-	char ** searchableConfigDirectories; 
+	char ** searchableConfigDirectories;
 } xdgCachedData;
 
 /** Get cache object associated with a handle */
@@ -195,7 +175,7 @@ static char** xdgSplitPath(const char* string)
 #endif
 		if (string[i] == PATH_SEPARATOR_CHAR) ++size;
 	}
-	
+
 	if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return 0;
 	xdgZeroMemory(itemlist, sizeof(char*)*size);
 
@@ -207,7 +187,7 @@ static char** xdgSplitPath(const char* string)
 			if (string[j] == '\\' && string[j+1]) ++j
 #endif
 			;
-	
+
 		if (!(itemlist[i] = (char*)malloc(j+1))) { xdgFreeStringList(itemlist); return 0; }
 
 		/* transfer string, unescaping any escaped seperators */

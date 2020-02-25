@@ -1,5 +1,0 @@
-basedir.lo
-libxdg-basedir.la
-.deps
-.libs
-basedir.o
